@@ -10,32 +10,33 @@ from openwpm.command_sequence import CommandSequence
 from openwpm.commands.browser_commands import GetCommand
 from openwpm.config import BrowserParams, ManagerParams
 from openwpm.storage.sql_provider import SQLiteStorageProvider
+from openwpm.storage.leveldb import LevelDbProvider
 from openwpm.task_manager import TaskManager
 
 def main(args):
     NUM_BROWSERS = args.browsers
     TOP_SITES = args.top
     MOBILE = args.mobile
-    XVFB = args.xvfb
+    # display_mode = native, headless, xvfb
+    DISPLAY = args.display_mode
     COOKIES = args.cookies
-
-    # The list of sites that we wish to crawl
-    sites = get_tranco_domains(TOP_SITES)
-    sites.append("file://" + str(PATH_TO_DCFP_HTML))
 
     #TODO log args param
     print("B: {}".format(NUM_BROWSERS))
     print("T: {}".format(TOP_SITES))
     print("M: {}".format(MOBILE))
-    print("X: {}".format(XVFB))
+    print("D: {}".format(DISPLAY))
     print("C: {}".format(COOKIES))
+
+    # The list of sites that we wish to crawl
+    sites = get_tranco_domains(TOP_SITES)
+    sites.append("file://" + str(PATH_TO_DCFP_HTML))
 
     # Loads the default ManagerParams
     # and NUM_BROWSERS copies of the default BrowserParams
 
     manager_params = ManagerParams(num_browsers=NUM_BROWSERS)
-    # display_mode = native, headless, xvfb
-    browser_params = [BrowserParams(display_mode="native") for _ in range(NUM_BROWSERS)]
+    browser_params = [BrowserParams(display_mode=DISPLAY) for _ in range(NUM_BROWSERS)]
 
     # Update browser configuration (use this for per-browser settings)
     for browser_param in browser_params:
@@ -68,7 +69,7 @@ def main(args):
         manager_params,
         browser_params,
         SQLiteStorageProvider(Path("./datadir/crawl-data.sqlite")),
-        None,
+        LevelDbProvider(Path("./datadir/crawl-data-leveldb")),
     ) as manager:
         # Visits the sites
         for index, site in enumerate(sites):

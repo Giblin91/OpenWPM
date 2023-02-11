@@ -1,3 +1,13 @@
+## Custom OpenWPM for research purpose
+This is a fork of OpenWPM, original `README.md` and documentation is below.
+
+Entry point is through the `run_crawl.py`, adapted from the available `demo.py`.
+Pass argument `-h` to read arguments for `run_crawl.py`.
+
+Calling the script with no arguments will have following defaults:
+browsers=1, top=2, mobile=False, display_mode='xvfb', cookies=False
+
+In addition to the original [installation](#installation) procedures, this version needs `xvfb` package.
 
 # OpenWPM [![Documentation Status](https://readthedocs.org/projects/openwpm/badge/?version=latest)](https://openwpm.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://github.com/openwpm/OpenWPM/workflows/Tests%20and%20linting/badge.svg?branch=master)](https://github.com/openwpm/OpenWPM/actions?query=branch%3Amaster) [![OpenWPM Matrix Channel](https://img.shields.io/matrix/OpenWPM:mozilla.org?label=Join%20us%20on%20matrix&server_fqdn=mozilla.modular.im)](https://matrix.to/#/#OpenWPM:mozilla.org?via=mozilla.org) <!-- omit in toc -->
 
