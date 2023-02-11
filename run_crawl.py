@@ -37,7 +37,6 @@ def main():
 
     args = parser.parse_args()
     #print(args)
-    # LOR
     
     crawl_openwpm(args)
 
