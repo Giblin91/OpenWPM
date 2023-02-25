@@ -11,32 +11,31 @@ def main():
                             const=1,
                             default=1,
                             type=int,
-                            help="N of browsers to spawn")
+                            help="N of browsers to spawn, default = 1")
 
     parser.add_argument("-t", "--top",
                             nargs='?',
                             const=2,
                             default=2,
                             type=int,
-                            help="Run crawl on top X selected url")
+                            help="Run crawl on top X selected url, default = 2")
 
     parser.add_argument("-m", "--mobile",
                             action="store_true",
-                            help="Run browsers as mobile emulation")
+                            help="Run browsers as mobile emulation, default = false")
 
     parser.add_argument("-d", "--display_mode",
                             nargs='?',
                             const='xvfb',
                             default='xvfb',
                             choices=['native', 'headless', 'xvfb'],
-                            help="Run in display mode as xvfb, headless, native")
+                            help="Run in display mode as xvfb, headless, native, default = xvfb")
 
     parser.add_argument("-c", "--cookies",
                             action="store_true",
-                            help="Run crawl with accept cookies functionality")
+                            help="Run crawl with accept cookies functionality, default = true")
 
     args = parser.parse_args()
-    #print(args)
     
     crawl_openwpm(args)
 

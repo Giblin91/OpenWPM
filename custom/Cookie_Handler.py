@@ -282,10 +282,10 @@ class AcceptCookiesCommand(BaseCommand):
     ) -> None:
 
         ex_list = set()
-            
+        dump_value = None
+        
         soup = bs(webdriver.page_source, "html.parser", multi_valued_attributes=None)
         clickable_tag = find_clickable(soup)
-        dump_value = None
 
         if clickable_tag:
             dump_value = "FOUND"
