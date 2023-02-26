@@ -1,6 +1,7 @@
 # CUSTOM CALO
 import os
 import csv
+import json
 from pathlib import Path
 
 # Assumes is in OpenWP/custom/
@@ -8,6 +9,8 @@ ROOT: Path = Path(__file__).parent.parent.absolute()
 PATH_TO_COOKIES = ROOT / "custom/src/accept_cookies.txt"
 PATH_TO_TRANCO = ROOT / "custom/src/tranco_10k.csv"
 PATH_TO_DCFP_HTML = ROOT / "custom/src/DeviceClassFP.html"
+DATADIR = ROOT / "datadir"
+D_TMP = DATADIR / "tmp"
 
 def check_file_in_path(file_name, file_path):
 
@@ -18,7 +21,7 @@ def check_file_in_path(file_name, file_path):
     return os.path.exists(file_path / file_name)
 
 # Dump list to specified file name in default OpenWPM/datadir
-def dump_list(list, file_name, path = ROOT / "datadir", mode = "w"):
+def dump_list(list, file_name, path = DATADIR, mode = "w"):
 
     if mode == "a" and not check_file_in_path(file_name, path):
         mode = "w"
@@ -29,6 +32,28 @@ def dump_list(list, file_name, path = ROOT / "datadir", mode = "w"):
 
     with open(path / file_name, mode) as log:
         log.write(dump)
+
+def open_json(file_name, path):
+    with open(path / file_name) as json_file:
+        data = json.load(json_file)
+    
+    return data
+
+# Dump list to specified file name in default OpenWPM/datadir
+def dump_json(dict, file_name, path = DATADIR, mode = "w"):
+
+    data = dict
+    if mode == "a":
+        if check_file_in_path(file_name, path):
+            # This does not affect the other two dictionaries. ** implies that an argument is a dictionary.
+            # Duplicates keys will be overwitten by the second.
+            # Here we assume their keys are distinct
+            data = {**open_json(file_name, path), **dict}
+        
+    # Replace if already existing
+    out_file = open(path / file_name, "w")
+    json.dump(data, out_file, indent = 4)
+    out_file.close()
 
 def get_tranco_domains(count=None):
 
@@ -49,3 +74,31 @@ def get_tranco_domains(count=None):
                 break
     
     return domains
+
+def list_files_in_path(file_path):
+
+    files = []
+    if not os.path.exists(file_path):
+        print(f"Path \'{file_path}\' does not exist")
+        return files
+
+    # Lists ALL content of path
+    all = os.listdir(file_path)
+
+    for f in all:
+        if os.path.isfile(file_path / f):
+            files.append(f)
+
+    return files
+
+def del_files_in_path(file_path, files = None):
+
+    if not os.path.exists(file_path):
+        print(f"Path \'{file_path}\' does not exist")
+        return
+    
+    if not files:
+        files = list_files_in_path(file_path)
+        
+    for f in files:
+        os.remove(file_path / f)
