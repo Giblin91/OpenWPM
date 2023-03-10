@@ -1,8 +1,7 @@
 # CUSTOM CALO
 import logging
-from pathlib import Path
 
-from custom.File_Helper import get_tranco_domains, PATH_TO_DCFP_HTML
+from custom.File_Helper import get_tranco_domains, PATH_TO_DCFP_HTML, DATADIR, OWPM_LOG, SQLITE, LEVELDB
 
 from custom.Cookie_Handler import AcceptCookiesCommand
 
@@ -55,8 +54,8 @@ def main(args):
         browser_param.save_content = True
 
     # Update TaskManager configuration (use this for crawl-wide settings)
-    manager_params.data_directory = Path("./datadir/")
-    manager_params.log_path = Path("./datadir/openwpm.log")
+    manager_params.data_directory = DATADIR
+    manager_params.log_path = OWPM_LOG
 
     # memory_watchdog and process_watchdog are useful for large scale cloud crawls.
     # Please refer to docs/Configuration.md#platform-configuration-options for more information
@@ -68,8 +67,8 @@ def main(args):
     with TaskManager(
         manager_params,
         browser_params,
-        SQLiteStorageProvider(Path("./datadir/crawl-data.sqlite")),
-        LevelDbProvider(Path("./datadir/crawl-data-leveldb")),
+        SQLiteStorageProvider(SQLITE),
+        LevelDbProvider(LEVELDB),
     ) as manager:
         # Visits the sites
         for index, site in enumerate(sites):

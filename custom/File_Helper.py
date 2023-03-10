@@ -11,11 +11,21 @@ PATH_TO_TRANCO = ROOT / "custom/src/tranco_10k.csv"
 PATH_TO_DCFP_HTML = ROOT / "custom/src/DeviceClassFP.html"
 DATADIR = ROOT / "datadir"
 D_TMP = DATADIR / "tmp"
+D_EXTRACT = DATADIR / "extract"
+OWPM_LOG = DATADIR / "openwpm.log"
+SQLITE = DATADIR / "crawl-data.sqlite"
+LEVELDB = DATADIR / "crawl-data-leveldb"
+
+def check_create_dir(file_path):
+    if not os.path.exists(file_path):
+        os.mkdir(file_path)
+        return False
+    
+    return True
 
 def check_file_in_path(file_name, file_path):
 
-    if not os.path.exists(file_path):
-        os.mkdir(file_path)
+    if check_create_dir(file_path):
         raise Exception(f"Path \'{file_path}\' does not exist, check failed for file \'{file_name}\'")
     
     return os.path.exists(file_path / file_name)
