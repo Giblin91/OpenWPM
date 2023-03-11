@@ -3,6 +3,8 @@ from tqdm import tqdm
 from hashlib import sha256
 from custom.File_Helper import dump_json, LEVELDB, D_EXTRACT
 
+# TODO I could do a sqlite query to extract only http_header hashes for js url of Canvas API to reduce extraction time and size
+# look at SELECT_JS_HTTP_URL in db_extract_v3
 
 def hash_sha256(input):
     return sha256(input).hexdigest()
