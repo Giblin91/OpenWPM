@@ -2,7 +2,6 @@ from openwpm.utilities.db_utils import get_content
 from tqdm import tqdm
 from hashlib import sha256
 from custom.File_Helper import dump_json, LEVELDB, D_EXTRACT
-import custom.Time as t
 
 
 def hash_sha256(input):
@@ -11,9 +10,10 @@ def hash_sha256(input):
 
 def level_db_to_json():
 
-    cursor = get_content(LEVELDB)
+    print("Get Level DB")
 
     level_db = {}
+    cursor = get_content(LEVELDB)
 
     print("LevelDB Extraction...")
     count = 0
@@ -35,6 +35,8 @@ def level_db_to_json():
     print("LevelDB elements: {}".format(len(level_db)))
 
 def main():
+
+    print("Prepare for extraction...")
 
     # Make a clean extraction
     # TODO not needed? I overwite existing file

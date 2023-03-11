@@ -1,8 +1,8 @@
 # CUSTOM CALO
 import logging
+import random
 
-from custom.File_Helper import get_tranco_domains, PATH_TO_DCFP_HTML, DATADIR, OWPM_LOG, SQLITE, LEVELDB
-
+from custom.File_Helper import get_tranco_domains, get_dcfp_logger, PATH_TO_DCFP_HTML, DATADIR, OWPM_LOG, SQLITE, LEVELDB
 from custom.Cookie_Handler import AcceptCookiesCommand
 
 from openwpm.command_sequence import CommandSequence
@@ -12,6 +12,30 @@ from openwpm.storage.sql_provider import SQLiteStorageProvider
 from openwpm.storage.leveldb import LevelDbProvider
 from openwpm.task_manager import TaskManager
 
+def format_args(args):
+
+    line = "*"*40
+    out_str = "\n"
+
+    out_str += line + "\n"
+    out_str += f"Num of Browsers:\t{args.browsers}\n"
+    out_str += f"Top Sites to Crawl:\t{args.top}\n"
+    out_str += f"Emulate Mobile:\t\t{args.mobile}\n"
+    out_str += f"Display Mode:\t\t{args.display_mode}\n"
+    out_str += f"Accept Cookies:\t\t{args.cookies}\n"
+    out_str += line
+
+    return out_str
+
+def gen_random_crawl_id(id_size = 20):
+
+    crawl_id = ""
+    
+    for i in range(id_size):
+        crawl_id += chr(random.randint(ord('a'), ord('z')))
+
+    return crawl_id
+
 def main(args):
     NUM_BROWSERS = args.browsers
     TOP_SITES = args.top
@@ -20,16 +44,18 @@ def main(args):
     DISPLAY = args.display_mode
     COOKIES = args.cookies
 
-    #TODO log args param
-    print("B: {}".format(NUM_BROWSERS))
-    print("T: {}".format(TOP_SITES))
-    print("M: {}".format(MOBILE))
-    print("D: {}".format(DISPLAY))
-    print("C: {}".format(COOKIES))
+    CRAWL_ID = gen_random_crawl_id()
+
+    # Logging Parameters
+    formatted_args = format_args(args)
+    dcfp_logger = get_dcfp_logger() # We do not setup, because we assume done in Time class
+    dcfp_logger.info(formatted_args)
 
     # The list of sites that we wish to crawl
-    sites = get_tranco_domains(TOP_SITES)
-    sites.append("file://" + str(PATH_TO_DCFP_HTML))
+    # We want our DCFP site to crawl first, to have it as "control" site
+    # Then we append retrieved data
+    sites = ["file://" + str(PATH_TO_DCFP_HTML)]
+    sites += get_tranco_domains(TOP_SITES)
 
     # Loads the default ManagerParams
     # and NUM_BROWSERS copies of the default BrowserParams
@@ -62,6 +88,7 @@ def main(args):
     # manager_params.memory_watchdog = True
     # manager_params.process_watchdog = True
 
+    dcfp_logger.info(f"Starting Crawl [{CRAWL_ID}]")
 
     # Commands time out by default after 60 seconds
     with TaskManager(
@@ -74,7 +101,13 @@ def main(args):
         for index, site in enumerate(sites):
 
             def callback(success: bool, val: str = site) -> None:
-                logging.getLogger("openwpm").info(f"CommandSequence for {val} ran {'successfully' if success else 'unsuccessfully'}")
+                log_msg = f"CommandSequence for {val} ran {'successfully' if success else 'unsuccessfully'}"
+                logging.getLogger("openwpm").info(log_msg)
+                
+                if success:
+                    dcfp_logger.info(log_msg)
+                else:
+                    dcfp_logger.warning(log_msg)
 
             # Parallelize sites over all number of browsers set above.
             command_sequence = CommandSequence(
@@ -91,3 +124,5 @@ def main(args):
 
             # Run commands across all browsers (simple parallelization)
             manager.execute_command_sequence(command_sequence)
+        
+    dcfp_logger.info(f"Terminating Crawl [{CRAWL_ID}]")

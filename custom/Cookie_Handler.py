@@ -1,10 +1,11 @@
 # CUSTOM CALO
 import time
 import logging
+from custom.File_Helper import get_dcfp_logger
 
 from bs4 import BeautifulSoup as bs
 
-from custom.File_Helper import dump_list, PATH_TO_COOKIES
+from custom.File_Helper import PATH_TO_COOKIES
 
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
@@ -180,32 +181,35 @@ def click_banner(driver):
                                                           })
                 break
         except:
-            log("Exception in processing element: {}".format (c.id), "error")
+            priv_log("Exception in processing element: {}".format (c.id), logging.ERROR)
             
     # Click the candidate
     if candidate is not None:
         try: # in some pages element is not clickable
 
-            log("Clicking text: {}".format (candidate.text.lower().strip(" ✓›!\n")) )
+            priv_log("Clicking text: {}".format(candidate.text.lower().strip(" ✓›!\n")))
             candidate.click()
             banner_data["clicked_element"] = candidate.id
-            log("Clicked: {}".format (candidate.id) )
+            priv_log("Clicked: {}".format(candidate.id))
             
         except:
-            log("Exception in candidate click", "error")
+            priv_log("Exception in candidate click", logging.ERROR)
     else:
-        log("Warning, no matching candidate", "warning")
+        priv_log("Warning, no matching candidate", logging.WARNING)
 
     return banner_data
 
-def log(msg, mode="info"):
+def priv_log(msg, mode = logging.INFO):
+
+    # Currently sent to openwpm logger but could have its own
     logger = logging.getLogger("openwpm")
 
-    if mode == "info":
+    if mode == logging.INFO:
         logger.info(msg)
-    elif mode == "error":
+    elif mode == logging.ERROR:
         logger.error(msg)
     else:
+        # I do not expect/have other scenarios here
         logger.warning(msg)
 
 def priv_accept(driver):
@@ -214,7 +218,7 @@ def priv_accept(driver):
     # Following solution is extracted from https://github.com/marty90/priv-accept
 
     # Click Banner
-    log("Searching Banner")
+    priv_log("Searching Banner")
     banner_data = click_banner(driver)
     
     dump_value = "CLICK"
@@ -229,7 +233,7 @@ def priv_accept(driver):
             iframe_contents = driver.find_elements(By.CSS_SELECTOR, "iframe")
             for content in iframe_contents:
 
-                log("Switching to frame: {}".format(content.id) )
+                priv_log("Switching to frame: {}".format(content.id))
                 
                 try:
                     driver.switch_to.frame(content)
@@ -245,17 +249,17 @@ def priv_accept(driver):
                 except NoSuchFrameException:
                     driver.switch_to.default_content()
                     
-                    log("Error in switching to frame", "error")
+                    priv_log("Error in switching to frame", logging.ERROR)
         except NoSuchElementException:
             driver.switch_to.default_content()
             
-            log("Error searching iframe", "error")
+            priv_log("Error searching iframe", logging.ERROR)
     
     # timeout was a cmd line param, default was 5
     timeout = 5
     time.sleep(timeout)
     
-    log("URL after click: {}".format(driver.current_url))
+    priv_log("URL after click: {}".format(driver.current_url))
     
     return dump_value
 
@@ -317,13 +321,15 @@ class AcceptCookiesCommand(BaseCommand):
                     if i == (len(xpaths)-1):
                         dump_value = "ERROR"
         
+        # priv_accept can be used after my custom approach or before it (minimum modification is required)
+        # It is kept disabled because after some tests it prooved to degrade crawl performance, with many "incomplete" visits
         #if not dump_value or dump_value == "ERROR":
         #    dump_value = priv_accept(webdriver)
 
-        to_dump = "{} - {}".format(dump_value, webdriver.current_url)
+        to_dump = "Cookie: {} - {}".format(dump_value, webdriver.current_url)
         
         # We log list even if in the end a button was clicked
         if ex_list:
             to_dump += " --> {}".format(str(list(ex_list)))
 
-        dump_list([to_dump], "accept_cookies.log", mode = "a")
+        get_dcfp_logger().info(to_dump)

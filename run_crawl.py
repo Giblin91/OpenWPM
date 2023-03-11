@@ -2,6 +2,9 @@
 import argparse
 from custom.crawl_openwpm import main as crawl_openwpm
 
+# Time will also log to our log file
+import custom.Time as t
+
 def main():
     # Argument parsing
     parser = argparse.ArgumentParser(description="DCFP Crawler")

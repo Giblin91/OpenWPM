@@ -3,6 +3,10 @@ import os
 import csv
 import json
 from pathlib import Path
+import logging
+
+FILE_FORM = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+CONS_FORM = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 
 # Assumes is in OpenWP/custom/
 ROOT: Path = Path(__file__).parent.parent.absolute()
@@ -15,6 +19,7 @@ D_EXTRACT = DATADIR / "extract"
 OWPM_LOG = DATADIR / "openwpm.log"
 SQLITE = DATADIR / "crawl-data.sqlite"
 LEVELDB = DATADIR / "crawl-data-leveldb"
+DCFP_LOG = D_EXTRACT / "crawl_dcfp.log"
 
 def check_create_dir(file_path):
     if not os.path.exists(file_path):
@@ -112,3 +117,28 @@ def del_files_in_path(file_path, files = None):
         
     for f in files:
         os.remove(file_path / f)
+
+# To setup as many loggers as you want
+def setup_logger(name = "CRAWL_DCFP", log_file = DCFP_LOG, level=logging.INFO, console=True):
+
+    # https://docs.python.org/3/howto/logging.html#handlers
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setFormatter(FILE_FORM)
+
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    logger.addHandler(file_handler)
+
+    if console:
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(CONS_FORM)
+        logger.addHandler(console_handler)
+
+    return logger
+
+def get_dcfp_logger(setup = False):
+
+    if setup:
+        setup_logger()
+    
+    return logging.getLogger("CRAWL_DCFP")
