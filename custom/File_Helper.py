@@ -1,5 +1,6 @@
 # CUSTOM CALO
 import os
+import shutil
 import csv
 import json
 from pathlib import Path
@@ -29,12 +30,24 @@ def check_create_dir(file_path) -> bool:
     
     return True
 
+def check_remove_dir(file_path) -> bool:
+    if os.path.exists(file_path):
+        shutil.rmtree(file_path)
+        return True
+    return False
+
 def check_file_in_path(file_name, file_path) -> bool:
 
-    if check_create_dir(file_path):
+    if not os.path.exists(file_path):
         raise Exception(f"Path \'{file_path}\' does not exist, check failed for file \'{file_name}\'")
     
     return os.path.exists(file_path / file_name)
+
+def check_remove_file(file_path) -> bool:
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return True
+    return False
 
 # Dump list to specified file name in default OpenWPM/datadir
 def dump_list(list, file_name, path = DATADIR, mode = "w"):
