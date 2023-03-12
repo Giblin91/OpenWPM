@@ -7,7 +7,7 @@ from custom.File_Helper import get_dcfp_logger
 
 dcfp_logger = get_dcfp_logger(True)
 
-def secondsToStr(elapsed=None):
+def secondsToStr(elapsed=None) -> str:
     if elapsed is None:
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
     else:

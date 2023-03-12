@@ -4,6 +4,7 @@ import csv
 import json
 from pathlib import Path
 import logging
+from hashlib import sha256, sha512
 
 FILE_FORM = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 CONS_FORM = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
@@ -21,14 +22,14 @@ SQLITE = DATADIR / "crawl-data.sqlite"
 LEVELDB = DATADIR / "crawl-data-leveldb"
 DCFP_LOG = D_EXTRACT / "crawl_dcfp.log"
 
-def check_create_dir(file_path):
+def check_create_dir(file_path) -> bool:
     if not os.path.exists(file_path):
         os.mkdir(file_path)
         return False
     
     return True
 
-def check_file_in_path(file_name, file_path):
+def check_file_in_path(file_name, file_path) -> bool:
 
     if check_create_dir(file_path):
         raise Exception(f"Path \'{file_path}\' does not exist, check failed for file \'{file_name}\'")
@@ -48,7 +49,9 @@ def dump_list(list, file_name, path = DATADIR, mode = "w"):
     with open(path / file_name, mode) as log:
         log.write(dump)
 
-def open_json(file_name, path):
+def open_json(file_name, path) -> (dict | None):
+    data = None
+
     with open(path / file_name) as json_file:
         data = json.load(json_file)
     
@@ -70,7 +73,7 @@ def dump_json(dict, file_name, path = DATADIR, mode = "w"):
     json.dump(data, out_file, indent = 4)
     out_file.close()
 
-def get_tranco_domains(count=None):
+def get_tranco_domains(count=None) -> list[str]:
 
     domains = []
 
@@ -90,7 +93,7 @@ def get_tranco_domains(count=None):
     
     return domains
 
-def list_files_in_path(file_path):
+def list_files_in_path(file_path) -> list[str]:
 
     files = []
     if not os.path.exists(file_path):
@@ -119,7 +122,7 @@ def del_files_in_path(file_path, files = None):
         os.remove(file_path / f)
 
 # To setup as many loggers as you want
-def setup_logger(name = "CRAWL_DCFP", log_file = DCFP_LOG, level=logging.INFO, console=True):
+def setup_logger(name = "CRAWL_DCFP", log_file = DCFP_LOG, level=logging.INFO, console=True) -> logging.Logger:
 
     # https://docs.python.org/3/howto/logging.html#handlers
     file_handler = logging.FileHandler(log_file)
@@ -136,9 +139,17 @@ def setup_logger(name = "CRAWL_DCFP", log_file = DCFP_LOG, level=logging.INFO, c
 
     return logger
 
-def get_dcfp_logger(setup = False):
+def get_dcfp_logger(setup = False) -> logging.Logger:
 
     if setup:
         setup_logger()
     
     return logging.getLogger("CRAWL_DCFP")
+
+
+def hash_sha256(input) -> str:
+    return sha256(input).hexdigest()
+    #return sha256(input.encode('utf-8')).hexdigest()
+
+def hash_sha512(input) -> str:
+    return sha512(input).hexdigest()
