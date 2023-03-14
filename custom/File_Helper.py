@@ -22,16 +22,19 @@ OWPM_LOG = DATADIR / "openwpm.log"
 SQLITE = DATADIR / "crawl-data.sqlite"
 LEVELDB = DATADIR / "crawl-data-leveldb"
 DCFP_LOG = D_EXTRACT / "crawl_dcfp.log"
+EXT_LVLDB = "extracted_levelDB.json"
 
 def check_create_dir(file_path) -> bool:
     if not os.path.exists(file_path):
         os.mkdir(file_path)
+        print(f"Created -> '{file_path}'")
         return False
     
     return True
 
 def check_remove_dir(file_path) -> bool:
     if os.path.exists(file_path):
+        print(f"Removing -> '{file_path}'")
         shutil.rmtree(file_path)
         return True
     return False
@@ -45,6 +48,7 @@ def check_file_in_path(file_name, file_path) -> bool:
 
 def check_remove_file(file_path) -> bool:
     if os.path.exists(file_path):
+        print(f"Removing -> '{file_path}'")
         os.remove(file_path)
         return True
     return False

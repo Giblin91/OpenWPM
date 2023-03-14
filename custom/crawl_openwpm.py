@@ -100,8 +100,8 @@ def main(args):
         # Visits the sites
         for index, site in enumerate(sites):
 
-            def callback(success: bool, val: str = site) -> None:
-                log_msg = f"CommandSequence for {val} ran {'successfully' if success else 'unsuccessfully'}"
+            def callback(success: bool, val: str = site, i : int = index) -> None:
+                log_msg = f"CommandSequence for {i}-{val} ran {'successfully' if success else 'unsuccessfully'}"
                 logging.getLogger("openwpm").info(log_msg)
                 
                 if success:

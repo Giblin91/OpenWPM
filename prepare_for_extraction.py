@@ -1,6 +1,6 @@
 from openwpm.utilities.db_utils import get_content
 from tqdm import tqdm
-from custom.File_Helper import dump_json, hash_sha256, hash_sha512, LEVELDB, D_EXTRACT
+from custom.File_Helper import dump_json, hash_sha512, LEVELDB, D_EXTRACT, EXT_LVLDB
 import shutil
 import os
 
@@ -27,18 +27,15 @@ def level_db_to_json():
         sha_hash = hash_sha512(script)
         level_db[key_hash] = sha_hash
 
-    file_name = "extracted_levelDB.json"
-    dump_json(level_db, file_name, D_EXTRACT)
+    dump_json(level_db, EXT_LVLDB, D_EXTRACT)
 
     print("LevelDB elements: {}".format(len(level_db)))
 
-    return file_name
-
-def copy_to_DeviceClassCrawl(file_name : str):
+def copy_to_DeviceClassCrawl():
     path = "/home/lor/Projects/DeviceClassCrawl/OpenWPM/datadir"
     
-    src = D_EXTRACT / file_name
-    dst = path + "/" + file_name
+    src = D_EXTRACT / EXT_LVLDB
+    dst = path + "/" + EXT_LVLDB
 
     print(f"Before copying\n{os.listdir(path)}")
     
@@ -52,13 +49,9 @@ def main():
 
     print("Prepare for extraction...")
 
-    # Make a clean extraction
-    # TODO not needed? I overwite existing file
-    #del_files_in_path(D_EXTRACT)
+    level_db_to_json()
 
-    file_name = level_db_to_json()
-
-    copy_to_DeviceClassCrawl(file_name)
+    #copy_to_DeviceClassCrawl()
 
     #t.log("Some msg")
     #Zip or compress sql...? and move it to extract? Move it and then compress all?
