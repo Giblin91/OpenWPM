@@ -47,5 +47,12 @@ echo 'Installing firefox.'
 echo 'Building extension.'
 ./scripts/build-extension.sh
 
+# CUSTOM [START]
+./scripts/step_2_end.sh
+
+echo "Preparing directory structure"
+python prepare_for_run.py
+# CUSTOM [END]
+
 echo 'Installation complete, activate your new environment by running:'
 echo 'conda activate openwpm'
