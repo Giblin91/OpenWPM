@@ -18,11 +18,13 @@ PATH_TO_DCFP_HTML = ROOT / "custom/src/DeviceClassFP.html"
 DATADIR = ROOT / "datadir"
 D_TMP = DATADIR / "tmp"
 D_EXTRACT = DATADIR / "extract"
-OWPM_LOG = DATADIR / "openwpm.log"
+OWP_NAME = "openwpm.log"
+OWPM_LOG = DATADIR / OWP_NAME
 SQLITE = DATADIR / "crawl-data.sqlite"
 LEVELDB = DATADIR / "crawl-data-leveldb"
 DCFP_LOG = D_EXTRACT / "crawl_dcfp.log"
 EXT_LVLDB = "extracted_levelDB.json"
+SQL_BZ2 = "crawl-data.sqlite.bz2"
 
 def check_create_dir(file_path) -> bool:
     if not os.path.exists(file_path):
