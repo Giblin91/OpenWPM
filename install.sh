@@ -48,11 +48,13 @@ echo 'Building extension.'
 ./scripts/build-extension.sh
 
 # CUSTOM [START]
-./scripts/step_2_end.sh
-
 echo "Preparing directory structure"
 python prepare_for_run.py
 # CUSTOM [END]
 
-echo 'Installation complete, activate your new environment by running:'
+echo 'Installation ALMOST complete, activate your new environment by running:'
 echo 'conda activate openwpm'
+
+# CUSTOM [START]
+echo "NEXT STEP -> run step_2_end.sh from within OpenWPM/"
+# CUSTOM [END]

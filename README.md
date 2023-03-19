@@ -7,9 +7,10 @@ Pass argument `-h` to read arguments for `run_crawl.py`.
 Calling the script with no arguments will have following defaults:
 browsers=1, top=2, mobile=False, display_mode='xvfb', cookies=False
 
-Custom installation procedures expect to clone this repo locally.
+Custom installation procedures expect to clone this repo locally with `git`.
 The script `step_1_prepare_owpm.sh` installs Mambaforge as desccribed in [Pre-requisites](#Pre-requisites) step. For modification to take effect, please reboot after this step.
-Then, as described in [install](#Install), the `install.sh` script will take care of setting up the virtual environment, as well as adding custom libraries and possible missing dependencies.
+Then, as described in [install](#Install), the `install.sh` script will take care of setting up the virtual environment.
+Finally, run the script `step_2_end.sh` to install additional libraries needed by this implementation and possible missing dependencies.
 
 # OpenWPM [![Documentation Status](https://readthedocs.org/projects/openwpm/badge/?version=latest)](https://openwpm.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://github.com/openwpm/OpenWPM/workflows/Tests%20and%20linting/badge.svg?branch=master)](https://github.com/openwpm/OpenWPM/actions?query=branch%3Amaster) [![OpenWPM Matrix Channel](https://img.shields.io/matrix/OpenWPM:mozilla.org?label=Join%20us%20on%20matrix&server_fqdn=mozilla.modular.im)](https://matrix.to/#/#OpenWPM:mozilla.org?via=mozilla.org) <!-- omit in toc -->
 

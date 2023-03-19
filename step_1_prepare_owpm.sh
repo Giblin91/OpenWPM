@@ -11,5 +11,5 @@ bash Mambaforge-$(uname)-$(uname -m).sh
 conda config --set auto_activate_base false
 
 echo "STEP 1 - COMPLETE"
-echo "NEXT STEP -> run install.sh from within OpenWPM/"
-echo "please reboot"
+echo "NEXT STEP -> run install.sh from within OpenWPM/ after reboot"
+echo "please reboot now..."
