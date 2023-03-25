@@ -92,7 +92,7 @@ def dump_json(dict, file_name, path = DATADIR, mode = "w"):
     json.dump(data, out_file, indent = 4)
     out_file.close()
 
-def get_tranco_domains(count=None) -> list[str]:
+def get_tranco_domains(count : int) -> list[str]:
 
     domains = []
 
@@ -104,11 +104,13 @@ def get_tranco_domains(count=None) -> list[str]:
 
         # displaying the contents of the CSV file
         for i, line in enumerate(csvFile):
-            domains.append("https://{}".format(line[1]))
 
             # Get only "count" of lines
-            if i+1 == count:
+            # If count > actual lines, for loop will only return the available lines
+            if i == count:
                 break
+
+            domains.append("https://{}".format(line[1]))
     
     return domains
 

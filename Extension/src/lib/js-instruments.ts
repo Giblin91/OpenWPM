@@ -271,6 +271,9 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
     args: IArguments,
     callContext: any,
     logSettings: LogSettings,
+    // Custom - [START]
+    ret_val : string,
+    // Custom - [END]
   ) {
     if (inLog) {
       return;
@@ -298,7 +301,10 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
         operation: JSOperation.call,
         symbol: instrumentedFunctionName,
         args: serialArgs,
-        value: "",
+        // Custom - [START]
+        // Original value: "",
+        value: ret_val,
+        // Custom - [END]
         scriptUrl: callContext.scriptUrl,
         scriptLine: callContext.scriptLine,
         scriptCol: callContext.scriptCol,
@@ -448,13 +454,21 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
   ) {
     return function() {
       const callContext = getOriginatingScriptContext(logSettings.logCallStack);
+
+      // Custom - [START]
+      const ret_val = func.apply(this, arguments);
+
       logCall(
         objectName + "." + methodName,
         arguments,
         callContext,
         logSettings,
+        JSON.stringify(ret_val),
       );
-      return func.apply(this, arguments);
+
+      return ret_val;
+      // Original: return func.apply(this, arguments);
+      // Custom - [END]
     };
   }
 
