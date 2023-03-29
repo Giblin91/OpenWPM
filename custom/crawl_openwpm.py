@@ -55,6 +55,7 @@ def main(args):
     # We want our DCFP site to crawl first, to have it as "control" site
     # Then we append retrieved data
     sites = ["file://" + str(PATH_TO_DCFP_HTML)]
+    #sites = ["https://adobe.com", "https://tiktok.com"]
     sites += get_tranco_domains(TOP_SITES)
 
     # Loads the default ManagerParams

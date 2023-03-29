@@ -1,5 +1,5 @@
 from custom.File_Helper import (check_create_dir, check_remove_dir, check_remove_file,
-                                ROOT, DATADIR, D_EXTRACT, D_CANVAS, LEVELDB, OWPM_LOG, SQLITE, DCFP_LOG, EXT_LVLDB)
+                                ROOT, DATADIR, D_EXTRACT, LEVELDB, OWPM_LOG, SQLITE)
 
 
 resp = input("This step will clean all existing crawl data. Do you really wish to continue? [y/n]\n")

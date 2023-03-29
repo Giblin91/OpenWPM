@@ -272,7 +272,7 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
     callContext: any,
     logSettings: LogSettings,
     // Custom - [START]
-    ret_val : string,
+    ret_val : any,
     // Custom - [END]
   ) {
     if (inLog) {
@@ -297,6 +297,16 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
           serializeObject(arg, logSettings.logFunctionsAsStrings),
         );
       }
+
+      // Custom - [START]
+      // Stringify of retval object returns just "{}"
+      if (instrumentedFunctionName == 'CanvasRenderingContext2D.getImageData'
+        && typeof ret_val == 'object') {
+          ret_val = JSON.stringify(ret_val?.data)
+          //ret_val = String(ret_val?.data)
+        }
+      // Custom - [END]
+
       const msg = {
         operation: JSOperation.call,
         symbol: instrumentedFunctionName,
@@ -463,7 +473,7 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
         arguments,
         callContext,
         logSettings,
-        JSON.stringify(ret_val),
+        ret_val,
       );
 
       return ret_val;
