@@ -80,6 +80,8 @@ def main(args):
         browser_param.dns_instrument = False
         browser_param.save_content = True
 
+        browser_param.custom_params = {"isMobile" : MOBILE}
+
     # Update TaskManager configuration (use this for crawl-wide settings)
     manager_params.data_directory = DATADIR
     manager_params.log_path = OWPM_LOG

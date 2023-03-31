@@ -17,6 +17,7 @@ from . import configure_firefox
 from .selenium_firefox import FirefoxBinary, FirefoxLogInterceptor, Options
 
 DEFAULT_SCREEN_RES = (1366, 768)
+ANDROID_SCREEN_RES = (360, 592)  # Moto G5
 logger = logging.getLogger("openwpm")
 
 
@@ -47,6 +48,15 @@ def deploy_firefox(
     fo.add_argument("-profile")
     fo.add_argument(str(browser_profile_path))
 
+    # CUSTOM CALO - START
+    screen_res = DEFAULT_SCREEN_RES
+    
+    if browser_params.custom_params["isMobile"]:
+        screen_res = ANDROID_SCREEN_RES
+        agent = " Mozilla/5.0 (Android 7.0; Mobile; rv:55.0) Gecko/55.0 Firefox/55.0"
+        fo.set_preference("general.useragent.override", agent)
+    # CUSTOM CALO - END
+
     assert browser_params.browser_id is not None
     if browser_params.seed_tar and not crash_recovery:
         logger.info(
@@ -76,11 +86,11 @@ def deploy_firefox(
     display = None
     if display_mode == "headless":
         fo.headless = True
-        fo.add_argument("--width={}".format(DEFAULT_SCREEN_RES[0]))
-        fo.add_argument("--height={}".format(DEFAULT_SCREEN_RES[1]))
+        fo.add_argument("--width={}".format(screen_res[0]))
+        fo.add_argument("--height={}".format(screen_res[1]))
     if display_mode == "xvfb":
         try:
-            display = Display(visible=False, size=DEFAULT_SCREEN_RES)
+            display = Display(visible=False, size=screen_res)
             display.start()
             display_pid, display_port = display.pid, display.display
         except EasyProcessError:
@@ -143,6 +153,8 @@ def deploy_firefox(
         log_path=interceptor.fifo,
     )
 
+    # driver created
+
     # Add extension
     if browser_params.extension_enabled:
 
@@ -155,7 +167,7 @@ def deploy_firefox(
         )
 
     # set window size
-    driver.set_window_size(*DEFAULT_SCREEN_RES)
+    driver.set_window_size(*screen_res)
 
     # Get browser process pid
     if hasattr(driver, "service") and hasattr(driver.service, "process"):
