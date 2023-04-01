@@ -4,6 +4,11 @@ echo "STEP 2 - START"
 echo "Activating conda environment"
 conda activate openwpm
 
+echo "Updating"
+
+sudo apt update
+sudo apt upgrade
+
 echo "Adding possible missing libraries..."
 
 # OpenWPM is aware that some dependencies might miss
@@ -27,6 +32,8 @@ apt-get install packagekit-gtk3-module -y
 # libasound.so.2: cannot open shared object file: No such file or directory
 sudo apt install libasound2 -y
 
+sudo apt install npm
+
 echo "Installing OpenWPM custom requirements..."
 
 sudo apt install xvfb
@@ -37,10 +44,5 @@ echo "Installing crawling and monitoring tools..."
 sudo apt install tmux
 sudo apt install htop # System Monitor
 sudo apt install duf # Disk Space
-
-echo "Updating"
-
-sudo apt update
-sudo apt upgrade
 
 echo "STEP 2 - COMPLETE"

@@ -10,7 +10,10 @@ browsers=1, top=2, mobile=False, display_mode='xvfb', cookies=False
 Custom installation procedures expect to clone this repo locally with `git`.
 The script `step_1_prepare_owpm.sh` installs Mambaforge as desccribed in [Pre-requisites](#Pre-requisites) step. For modification to take effect, please reboot after this step.
 Then, as described in [install](#Install), the `install.sh` script will take care of setting up the virtual environment.
-Finally, run the script `step_2_end.sh` to install additional libraries needed by this implementation and possible missing dependencies.
+Finally, run the script `step_2_end.sh` to install additional libraries needed by this implementation, as well as possible missing dependencies.
+
+This fork modified content of the `/Extension/` folder in order to capture return value of tracked javascript function calls (not supported at time of writing. See Issue [#967](https://github.com/openwpm/OpenWPM/issues/967)).
+As described in [CONTRIBUTING.md > Editing instrumentation](https://github.com/Giblin91/OpenWPM/blob/master/CONTRIBUTING.md#editing-instrumentation), command `npm run build` needs to be exected from within `/Extension/` to re-build its content. This step should already take place during `install.sh`.
 
 # OpenWPM [![Documentation Status](https://readthedocs.org/projects/openwpm/badge/?version=latest)](https://openwpm.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://github.com/openwpm/OpenWPM/workflows/Tests%20and%20linting/badge.svg?branch=master)](https://github.com/openwpm/OpenWPM/actions?query=branch%3Amaster) [![OpenWPM Matrix Channel](https://img.shields.io/matrix/OpenWPM:mozilla.org?label=Join%20us%20on%20matrix&server_fqdn=mozilla.modular.im)](https://matrix.to/#/#OpenWPM:mozilla.org?via=mozilla.org) <!-- omit in toc -->
 
