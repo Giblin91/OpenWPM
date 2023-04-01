@@ -19,6 +19,7 @@ As described in [CONTRIBUTING.md > Editing instrumentation](https://github.com/G
 - extracted_levelDB.json (content of levelDB as key-(hash)value)
 - crawl_dcfp.log
 - openwpm.log
+- sql_data.json (known needed queries content of sqlite)
 
 # OpenWPM [![Documentation Status](https://readthedocs.org/projects/openwpm/badge/?version=latest)](https://openwpm.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://github.com/openwpm/OpenWPM/workflows/Tests%20and%20linting/badge.svg?branch=master)](https://github.com/openwpm/OpenWPM/actions?query=branch%3Amaster) [![OpenWPM Matrix Channel](https://img.shields.io/matrix/OpenWPM:mozilla.org?label=Join%20us%20on%20matrix&server_fqdn=mozilla.modular.im)](https://matrix.to/#/#OpenWPM:mozilla.org?via=mozilla.org) <!-- omit in toc -->
 

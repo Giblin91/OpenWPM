@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import logging
 from hashlib import sha256, sha512
+import sqlite3 as lite
 
 FILE_FORM = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 CONS_FORM = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
@@ -182,3 +183,16 @@ def hash_sha256(input) -> str:
 
 def hash_sha512(input) -> str:
     return sha512(input).hexdigest()
+
+
+def get_from_db(sql_command : str):
+
+    # connect to the output database
+    conn = lite.connect(SQLITE)
+    cur = conn.cursor()
+
+    # commented below returns list
+    #result =  cur.execute(sql_command).fetchall()
+    result =  cur.execute(sql_command)
+
+    return result

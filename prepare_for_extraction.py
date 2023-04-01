@@ -1,15 +1,52 @@
 from openwpm.utilities.db_utils import get_content
 from tqdm import tqdm
-from custom.File_Helper import (open_file, dump_json, hash_sha512,
+import time
+from custom.File_Helper import (open_file, dump_json, hash_sha512, get_from_db,
                                 LEVELDB, D_EXTRACT, EXT_LVLDB, SQLITE, SQL_BZ2, OWPM_LOG, OWP_LOG_NAME, DCFP_LOG, DCFP_LOG_NAME)
 import shutil
 import os
 import bz2
 
-# TODO I could do a sqlite query to extract only http_header hashes for js url of Canvas API to reduce extraction time and size
-# look at SELECT_JS_HTTP_URL in db_extract_v3
+INC_VISITS = "SELECT DISTINCT i.visit_id FROM incomplete_visits AS i;"
+SITE_VISITS = "SELECT DISTINCT s.browser_id, s.visit_id, s.site_url FROM site_visits AS s;"
+CRAWL = "SELECT DISTINCT c.task_id, c.browser_id FROM crawl AS c;"
+
+CANVAS_JS = """SELECT sv.site_url, j.script_url, j.browser_id, j.symbol,
+                        j.operation, j.value, j.arguments, j.time_stamp,
+                        j.visit_id
+                FROM javascript AS j
+                INNER JOIN site_visits AS sv
+                    ON sv.visit_id == j.visit_id
+                WHERE j.symbol LIKE '%HTMLCanvasElement%'
+                    OR j.symbol LIKE '%CanvasRenderingContext2D%'
+                ORDER BY sv.site_url, j.script_url, j.time_stamp, j.browser_id;"""
+JS_HTTP_URL = """SELECT DISTINCT j.script_url, h1.content_hash
+                FROM javascript AS j
+                INNER JOIN http_responses AS h1
+                    ON h1.url == j.script_url
+                WHERE j.symbol LIKE '%HTMLCanvasElement%'
+                    OR j.symbol LIKE '%CanvasRenderingContext2D%'
+                ORDER BY j.script_url"""
+HTTP_SIZES = """SELECT DISTINCT h.url, h.headers
+                FROM http_responses AS h
+                INNER JOIN javascript AS j
+                    ON j.script_url == h.url
+                WHERE h.headers like '%content-length%'
+                    AND (j.symbol LIKE '%HTMLCanvasElement%'
+                        OR j.symbol LIKE '%CanvasRenderingContext2D%')"""
+
+MATH_JS = """SELECT DISTINCT sv.site_url, j.script_url, j.browser_id, j.visit_id
+            FROM javascript AS j
+                INNER JOIN site_visits AS sv
+                    ON sv.visit_id == j.visit_id
+            WHERE j.symbol LIKE '%Math.random%'
+            ORDER BY sv.site_url, j.script_url, j.browser_id;"""
+
 
 def get_crawl_id() -> str:
+
+    print("Selecting crawl_id...")
+
     marker = "INFO Starting Crawl ["
     crawl_id : str = None
 
@@ -22,6 +59,9 @@ def get_crawl_id() -> str:
 
             break
     
+    print("\"" + crawl_id + "\"")
+    print()
+
     return crawl_id
 
 def level_db_to_json(crawl_id : str):
@@ -47,6 +87,7 @@ def level_db_to_json(crawl_id : str):
     dump_json(level_db, f"{crawl_id}_{EXT_LVLDB}", D_EXTRACT)
 
     print("LevelDB elements: {}".format(len(level_db)))
+    print()
 
 
 def compress_sqlite():
@@ -67,16 +108,49 @@ def copy_file(src, dst):
     print("Copying file...")
     print(f"SRC: {src}")
     print(f"DST: {dst}")
+    print()
 
     if os.path.exists(dst):
         os.remove(dst)
 
     shutil.copyfile(src, dst)
 
+def get_query_data(query_data_name : str, query : str, first_only : bool = False):
+
+    print(f"Extracting {query_data_name}...")
+
+    result = get_from_db(query)
+
+    if first_only:
+        return [t[0] for t in result]
+    else:
+        return [t for t in result]
+
+def sql_to_json(crawl_id):
+
+    start = time.time()
+    print("Get SQL Data")
+    
+    sql_data = {}
+    sql_data["incomplete_visits"]   = get_query_data("incomplete_visits", INC_VISITS, True)
+    sql_data["site_visits"]         = get_query_data("site_visits", SITE_VISITS)
+    sql_data["crawl"]               = get_query_data("crawl", CRAWL, True)
+    sql_data["canvas_js"]           = get_query_data("canvas_js", CANVAS_JS)
+    sql_data["js_http_url"]         = get_query_data("js_http_url", JS_HTTP_URL)
+    sql_data["http_sizes"]          = get_query_data("http_sizes", HTTP_SIZES)
+    sql_data["math_js"]             = get_query_data("math_js", MATH_JS)
+
+    end = time.time()
+    print(f"SQL Extraction time: {end - start}s")
+    start = end
+
+    dump_json(sql_data, f"{crawl_id}_sql_data.json", D_EXTRACT)
+    end = time.time()
+    print(f"JSON Write time: {end - start}s")
+    print()
+
 
 def main():
-
-    print("Prepare for extraction...")
 
     crawl_id = get_crawl_id()
     
@@ -86,10 +160,11 @@ def main():
 
         level_db_to_json(crawl_id)
 
+        sql_to_json(crawl_id)
+
         #t.log("Some msg")
         #compress_sqlite()
         #Zip or compress sql...? and move it to extract? Move it and then compress all?
-        # TODO extract needed queries as txt of tuples?
 
         #copy_file(OWPM_LOG, D_EXTRACT / OWP_NAME)
     else:
