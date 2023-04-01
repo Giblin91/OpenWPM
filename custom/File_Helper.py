@@ -10,21 +10,24 @@ from hashlib import sha256, sha512
 FILE_FORM = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 CONS_FORM = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
 
+OWP_LOG_NAME = "openwpm.log"
+DCFP_LOG_NAME = "crawl_dcfp.log"
+EXT_LVLDB = "extracted_levelDB.json"
+SQL_BZ2 = "crawl-data.sqlite.bz2"
+
 # Assumes is in OpenWP/custom/
 ROOT: Path = Path(__file__).parent.parent.absolute()
 PATH_TO_COOKIES = ROOT / "custom/src/accept_cookies.txt"
 PATH_TO_TRANCO = ROOT / "custom/src/tranco_10k.csv"
 PATH_TO_DCFP_HTML = ROOT / "custom/src/DeviceClassFP.html"
 DATADIR = ROOT / "datadir"
+
 D_TMP = DATADIR / "tmp"
 D_EXTRACT = DATADIR / "extract"
-OWP_NAME = "openwpm.log"
-OWPM_LOG = DATADIR / OWP_NAME
+OWPM_LOG = DATADIR / OWP_LOG_NAME
 SQLITE = DATADIR / "crawl-data.sqlite"
 LEVELDB = DATADIR / "crawl-data-leveldb"
-DCFP_LOG = D_EXTRACT / "crawl_dcfp.log"
-EXT_LVLDB = "extracted_levelDB.json"
-SQL_BZ2 = "crawl-data.sqlite.bz2"
+DCFP_LOG = DATADIR / DCFP_LOG_NAME
 
 def check_create_dir(file_path) -> bool:
     if not os.path.exists(file_path):
@@ -91,6 +94,11 @@ def dump_json(dict, file_name, path = DATADIR, mode = "w"):
     out_file = open(path / file_name, "w")
     json.dump(data, out_file, indent = 4)
     out_file.close()
+
+def open_file(path_to_file, mode = 'r', encoding='utf-8'):
+        
+    # opening file
+    return open(path_to_file, mode= mode, encoding= encoding)
 
 def get_tranco_domains(count : int) -> list[str]:
 

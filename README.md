@@ -15,6 +15,11 @@ Finally, run the script `step_2_end.sh` to install additional libraries needed b
 This fork modified content of the `/Extension/` folder in order to capture return value of tracked javascript function calls (not supported at time of writing. See Issue [#967](https://github.com/openwpm/OpenWPM/issues/967)).
 As described in [CONTRIBUTING.md > Editing instrumentation](https://github.com/Giblin91/OpenWPM/blob/master/CONTRIBUTING.md#editing-instrumentation), command `npm run build` needs to be exected from within `/Extension/` to re-build its content. This step should already take place during `install.sh`.
 
+`prepare_for_extraction.py` moves resources for analysis to `/datadir/extract/` folder. All resources will have a unique prefix added to their name. After execution the folder will contain:
+- extracted_levelDB.json (content of levelDB as key-(hash)value)
+- crawl_dcfp.log
+- openwpm.log
+
 # OpenWPM [![Documentation Status](https://readthedocs.org/projects/openwpm/badge/?version=latest)](https://openwpm.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://github.com/openwpm/OpenWPM/workflows/Tests%20and%20linting/badge.svg?branch=master)](https://github.com/openwpm/OpenWPM/actions?query=branch%3Amaster) [![OpenWPM Matrix Channel](https://img.shields.io/matrix/OpenWPM:mozilla.org?label=Join%20us%20on%20matrix&server_fqdn=mozilla.modular.im)](https://matrix.to/#/#OpenWPM:mozilla.org?via=mozilla.org) <!-- omit in toc -->
 
 OpenWPM is a web privacy measurement framework which makes it easy to
