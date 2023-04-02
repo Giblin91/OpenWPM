@@ -1,7 +1,7 @@
 echo "STEP 1 - START"
 echo "Updating environment..."
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 echo "Installing Mambaforge..."
 wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"

@@ -105,15 +105,21 @@ def compress_sqlite():
 
 
 def copy_file(src, dst):
-    print("Copying file...")
-    print(f"SRC: {src}")
-    print(f"DST: {dst}")
-    print()
 
-    if os.path.exists(dst):
-        os.remove(dst)
+    if os.path.exists(src):
+        print("Copying file...")
+        print(f"SRC: {src}")
+        print(f"DST: {dst}")
+        print()
 
-    shutil.copyfile(src, dst)
+        if os.path.exists(dst):
+            os.remove(dst)
+
+        shutil.copyfile(src, dst)
+        
+    else:
+        print(f"Copy SRC not found: {src}")
+        print()
 
 def get_query_data(query_data_name : str, query : str, first_only : bool = False):
 

@@ -36,13 +36,13 @@ sudo apt install npm
 
 echo "Installing OpenWPM custom requirements..."
 
-sudo apt install xvfb
-conda install tqdm
+sudo apt install xvfb -y
+conda install tqdm -y
 
 echo "Installing crawling and monitoring tools..."
 
-sudo apt install tmux
-sudo apt install htop # System Monitor
-sudo apt install duf # Disk Space
+sudo apt install tmux -y
+sudo apt install htop -y # System Monitor
+sudo apt install duf -y # Disk Space
 
 echo "STEP 2 - COMPLETE"

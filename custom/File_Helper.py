@@ -19,7 +19,7 @@ SQL_BZ2 = "crawl-data.sqlite.bz2"
 # Assumes is in OpenWP/custom/
 ROOT: Path = Path(__file__).parent.parent.absolute()
 PATH_TO_COOKIES = ROOT / "custom/src/accept_cookies.txt"
-PATH_TO_TRANCO = ROOT / "custom/src/tranco_10k.csv"
+PATH_TO_TRANCO = ROOT / "custom/src/tranco_100k.csv"
 PATH_TO_DCFP_HTML = ROOT / "custom/src/DeviceClassFP.html"
 DATADIR = ROOT / "datadir"
 
