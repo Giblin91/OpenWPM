@@ -140,7 +140,7 @@ def sql_to_json(crawl_id):
     sql_data = {}
     sql_data["incomplete_visits"]   = get_query_data("incomplete_visits", INC_VISITS, True)
     sql_data["site_visits"]         = get_query_data("site_visits", SITE_VISITS)
-    sql_data["crawl"]               = get_query_data("crawl", CRAWL, True)
+    sql_data["crawl"]               = get_query_data("crawl", CRAWL)
     sql_data["canvas_js"]           = get_query_data("canvas_js", CANVAS_JS)
     sql_data["js_http_url"]         = get_query_data("js_http_url", JS_HTTP_URL)
     sql_data["http_sizes"]          = get_query_data("http_sizes", HTTP_SIZES)
