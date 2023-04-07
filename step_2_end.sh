@@ -1,7 +1,11 @@
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 echo "STEP 2 - START"
 
 # In activated conda env:
 echo "Activating conda environment"
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 conda activate openwpm
 
 echo "Updating"
@@ -9,7 +13,11 @@ echo "Updating"
 sudo apt update
 sudo apt upgrade
 
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 echo "Adding possible missing libraries..."
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 
 # OpenWPM is aware that some dependencies might miss
 # https://github.com/openwpm/OpenWPM/issues/660
@@ -34,12 +42,20 @@ sudo apt install libasound2 -y
 
 sudo apt install npm
 
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 echo "Installing OpenWPM custom requirements..."
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 
 sudo apt install xvfb -y
 conda install tqdm -y
 
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 echo "Installing crawling and monitoring tools..."
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 
 sudo apt install tmux -y
 sudo apt install htop -y # System Monitor

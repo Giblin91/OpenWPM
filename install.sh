@@ -48,8 +48,12 @@ echo 'Building extension.'
 ./scripts/build-extension.sh
 
 # CUSTOM [START]
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 echo "Preparing directory structure"
 python prepare_for_run.py
+echo '----------------------------------------------------------'
+echo '----------------------------------------------------------'
 # CUSTOM [END]
 
 echo 'Installation ALMOST complete, activate your new environment by running:'
