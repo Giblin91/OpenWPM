@@ -9,6 +9,7 @@ echo '----------------------------------------------------------'
 
 # Make conda available to shell script
 eval "$(conda shell.bash hook)"
+conda config --set auto_activate_base false
 conda activate openwpm
 
 echo "Updating"

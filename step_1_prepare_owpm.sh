@@ -16,7 +16,6 @@ wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambafor
 bash Mambaforge-$(uname)-$(uname -m).sh
 # When prompted press enter, q to quit reading
 # To take effect close current shell
-conda config --set auto_activate_base false
 
 echo '----------------------------------------------------------'
 echo '----------------------------------------------------------'
