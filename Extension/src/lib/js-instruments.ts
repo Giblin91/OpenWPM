@@ -300,10 +300,9 @@ export function getInstrumentJS(eventId: string, sendMessagesToLogger) {
 
       // Custom - [START]
       // Stringify of retval object returns just "{}"
-      if (instrumentedFunctionName == 'CanvasRenderingContext2D.getImageData'
+      if (instrumentedFunctionName === 'CanvasRenderingContext2D.getImageData'
         && typeof ret_val == 'object') {
           ret_val = JSON.stringify(ret_val?.data)
-          //ret_val = String(ret_val?.data)
         }
       // Custom - [END]
 
