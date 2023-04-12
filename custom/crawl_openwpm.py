@@ -19,7 +19,7 @@ def format_args(args):
 
     out_str += line + "\n"
     out_str += f"Num of Browsers:\t{args.browsers}\n"
-    out_str += f"Top Sites to Crawl:\t{args.top}\n"
+    out_str += f"Sites Range to Crawl:\t{args.site_range[0]}-{args.site_range[1]}\n"
     out_str += f"Emulate Mobile:\t\t{args.mobile}\n"
     out_str += f"Display Mode:\t\t{args.display_mode}\n"
     out_str += f"Accept Cookies:\t\t{args.cookies}\n"
@@ -27,10 +27,10 @@ def format_args(args):
 
     return out_str
 
-def gen_random_crawl_id(id_size = 20):
+def gen_random_crawl_id(site_range : list, id_size : int = 5):
 
-    crawl_id = ""
-    
+    crawl_id = f"{site_range[0]}_{site_range[1]}_"
+
     for i in range(id_size):
         crawl_id += chr(random.randint(ord('a'), ord('z')))
 
@@ -38,13 +38,13 @@ def gen_random_crawl_id(id_size = 20):
 
 def main(args):
     NUM_BROWSERS = args.browsers
-    TOP_SITES = args.top
+    SITE_RANGE = args.site_range
     MOBILE = args.mobile
     # display_mode = native, headless, xvfb
     DISPLAY = args.display_mode
     COOKIES = args.cookies
 
-    CRAWL_ID = gen_random_crawl_id()
+    CRAWL_ID = gen_random_crawl_id(SITE_RANGE)
 
     # Logging Parameters
     formatted_args = format_args(args)
@@ -56,7 +56,7 @@ def main(args):
     # Then we append retrieved data
     sites = ["file://" + str(PATH_TO_DCFP_HTML)]
     #sites = ["https://adobe.com", "https://tiktok.com"]
-    sites += get_tranco_domains(TOP_SITES)
+    sites += get_tranco_domains(SITE_RANGE[0], SITE_RANGE[1])
 
     # Loads the default ManagerParams
     # and NUM_BROWSERS copies of the default BrowserParams

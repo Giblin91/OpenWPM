@@ -13,15 +13,16 @@ def main():
                             nargs='?',
                             const=1,
                             default=1,
+                            metavar='N',
                             type=int,
                             help="N of browsers to spawn, default = 1")
 
-    parser.add_argument("-t", "--top",
-                            nargs='?',
-                            const=2,
-                            default=2,
+    parser.add_argument("-sr", "--site_range",
+                            nargs=2,
+                            default=[0,2],
+                            metavar='x',
                             type=int,
-                            help="Run crawl on top X selected url, default = 2")
+                            help="Run crawl on range of selected urls, default = 1 to 2")
 
     parser.add_argument("-m", "--mobile",
                             action="store_true",
@@ -36,9 +37,16 @@ def main():
 
     parser.add_argument("-c", "--cookies",
                             action="store_true",
-                            help="Run crawl with accept cookies functionality, default = true")
+                            help="Run crawl with accept cookies functionality, default = false")
 
     args = parser.parse_args()
+
+    # Validate site_range
+    rank = args.site_range
+    if rank[0] >= rank[1]:
+        raise Exception("First value of site_range must be smaller than the second one")
+    elif rank[0] < 0 or rank[1] < 0:
+        raise Exception("Invalid negative value for site_range")
     
     crawl_openwpm(args)
 

@@ -101,7 +101,7 @@ def open_file(path_to_file, mode = 'r', encoding='utf-8'):
     # opening file
     return open(path_to_file, mode= mode, encoding= encoding)
 
-def get_tranco_domains(count : int) -> list[str]:
+def get_tranco_domains(count_from : int, count_to : int) -> list[str]:
 
     domains = []
 
@@ -114,9 +114,13 @@ def get_tranco_domains(count : int) -> list[str]:
         # displaying the contents of the CSV file
         for i, line in enumerate(csvFile):
 
-            # Get only "count" of lines
-            # If count > actual lines, for loop will only return the available lines
-            if i == count:
+            # Skip lines
+            if i < count_from:
+                continue
+
+            # Get only "count_to" lines
+            # If count_to > actual lines in file, for-loop will only return the available lines
+            if i == count_to:
                 break
 
             domains.append("https://{}".format(line[1]))
