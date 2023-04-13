@@ -33,5 +33,9 @@
     {"window.Math": {
         "propertiesToInstrument": ["random"],
         "logCallStack": true
+    }},
+    {"EventTarget": {
+        "propertiesToInstrument": ["addEventListener"],
+        "logCallStack": true
     }}
 ]

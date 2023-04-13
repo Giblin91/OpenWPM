@@ -18,11 +18,11 @@ def format_args(args):
     out_str = "\n"
 
     out_str += line + "\n"
-    out_str += f"Num of Browsers:\t{args.browsers}\n"
+    out_str += f"Num of Browsers:\t\t{args.browsers}\n"
     out_str += f"Sites Range to Crawl:\t{args.site_range[0]}-{args.site_range[1]}\n"
-    out_str += f"Emulate Mobile:\t\t{args.mobile}\n"
-    out_str += f"Display Mode:\t\t{args.display_mode}\n"
-    out_str += f"Accept Cookies:\t\t{args.cookies}\n"
+    out_str += f"Emulate Mobile:\t\t\t{args.mobile}\n"
+    out_str += f"Display Mode:\t\t\t{args.display_mode}\n"
+    out_str += f"Accept Cookies:\t\t\t{args.cookies}\n"
     out_str += line
 
     return out_str
@@ -54,7 +54,8 @@ def main(args):
     # The list of sites that we wish to crawl
     # We want our DCFP site to crawl first, to have it as "control" site
     # Then we append retrieved data
-    sites = ["file://" + str(PATH_TO_DCFP_HTML)]
+    dcfp_html_file = "file://" + str(PATH_TO_DCFP_HTML)
+    sites = [dcfp_html_file]
     #sites = ["https://adobe.com", "https://tiktok.com"]
     sites += get_tranco_domains(SITE_RANGE[0], SITE_RANGE[1])
 
@@ -103,7 +104,11 @@ def main(args):
         # Visits the sites
         for index, site in enumerate(sites):
 
-            def callback(success: bool, val: str = site, i : int = index) -> None:
+            def callback(success: bool, val: str = site, i : int = index + SITE_RANGE[0]) -> None:
+                
+                if val == dcfp_html_file:
+                    i = 0
+                
                 log_msg = f"CommandSequence for {i}-{val} ran {'successfully' if success else 'unsuccessfully'}"
                 logging.getLogger("openwpm").info(log_msg)
                 

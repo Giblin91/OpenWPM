@@ -22,7 +22,7 @@ def main():
                             default=[0,2],
                             metavar='x',
                             type=int,
-                            help="Run crawl on range of selected urls, default = 1 to 2")
+                            help="Run crawl on range of selected urls (as indexes of list, \"to\" value excluded), default = from 0 to 2")
 
     parser.add_argument("-m", "--mobile",
                             action="store_true",
