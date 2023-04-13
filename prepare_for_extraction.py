@@ -1,8 +1,8 @@
 from openwpm.utilities.db_utils import get_content
 from tqdm import tqdm
 import time
-from custom.File_Helper import (open_file, dump_json, hash_sha512, get_from_db,
-                                LEVELDB, D_EXTRACT, EXT_LVLDB, SQLITE, SQL_BZ2, OWPM_LOG, OWP_LOG_NAME, DCFP_LOG, DCFP_LOG_NAME)
+from custom.File_Helper import (dump_json, hash_sha512, get_from_db,
+                                LEVELDB, D_EXTRACT, EXT_LVLDB, SQLITE, SQL_BZ2, OWPM_LOG, OWP_LOG_NAME, DCFP_LOG, DCFP_LOG_NAME, SQLITE)
 import shutil
 import os
 import bz2
@@ -50,17 +50,21 @@ def get_crawl_id() -> str:
     marker = "INFO Starting Crawl ["
     crawl_id : str = None
 
-    file_lines : list[str] = open_file(DCFP_LOG).readlines()
+    try:
+        with open(DCFP_LOG, mode= "r", encoding= 'utf-8') as file:
+            file_lines : list[str] = file.readlines()
 
-    for l in file_lines:
-        if marker in l:
-            tmp = l.split(marker)[1]
-            crawl_id = tmp.split("]")[0]
+        for l in file_lines:
+            if marker in l:
+                tmp = l.split(marker)[1]
+                crawl_id = tmp.split("]")[0]
 
-            break
-    
-    print("\"" + crawl_id + "\"")
-    print()
+                break
+        
+        print("\"" + crawl_id + "\"")
+        print()
+    except:
+        None
 
     return crawl_id
 
@@ -69,25 +73,34 @@ def level_db_to_json(crawl_id : str):
     print("Get Level DB")
 
     level_db = {}
-    cursor = get_content(LEVELDB)
+    
+    try:
 
-    print("LevelDB Extraction...")
-    for key_hash, script in tqdm(cursor):
+        cursor = get_content(LEVELDB)
 
-        # Data is returned as bytes:  b'04c640b950f2cdeebe03e63961e4b4d945febf6737abc25ff1695233cc7af4ed'
-        # decoding returns a string: 04c640b950f2cdeebe03e63961e4b4d945febf6737abc25ff1695233cc7af4ed
-        key_hash = key_hash.decode("utf-8")
-        
-        # Hashing whole script on my own to better compare and process
-        # script = str(script)
-        #sha_hash = hash_sha256(script)
-        sha_hash = hash_sha512(script)
-        level_db[key_hash] = sha_hash
+        print("LevelDB Extraction...")
+        for key_hash, script in tqdm(cursor):
 
-    dump_json(level_db, f"{crawl_id}_{EXT_LVLDB}", D_EXTRACT)
+            # Data is returned as bytes:  b'04c640b950f2cdeebe03e63961e4b4d945febf6737abc25ff1695233cc7af4ed'
+            # decoding returns a string: 04c640b950f2cdeebe03e63961e4b4d945febf6737abc25ff1695233cc7af4ed
+            key_hash = key_hash.decode("utf-8")
+            
+            # Hashing whole script on my own to better compare and process
+            # script = str(script)
+            #sha_hash = hash_sha256(script)
+            sha_hash = hash_sha512(script)
+            level_db[key_hash] = sha_hash
+    except:
+        None
 
-    print("LevelDB elements: {}".format(len(level_db)))
-    print()
+    if level_db:
+        dump_json(level_db, f"{crawl_id}_{EXT_LVLDB}", D_EXTRACT)
+
+        print("LevelDB elements: {}".format(len(level_db)))
+        print()
+    else:
+        print("LevelDB not found")
+        print()
 
 
 def compress_sqlite():
@@ -137,23 +150,27 @@ def sql_to_json(crawl_id):
     start = time.time()
     print("Get SQL Data")
     
-    sql_data = {}
-    sql_data["incomplete_visits"]   = get_query_data("incomplete_visits", INC_VISITS, True)
-    sql_data["site_visits"]         = get_query_data("site_visits", SITE_VISITS)
-    sql_data["crawl"]               = get_query_data("crawl", CRAWL)
-    sql_data["canvas_js"]           = get_query_data("canvas_js", CANVAS_JS)
-    sql_data["js_http_url"]         = get_query_data("js_http_url", JS_HTTP_URL)
-    sql_data["http_sizes"]          = get_query_data("http_sizes", HTTP_SIZES)
-    sql_data["math_js"]             = get_query_data("math_js", MATH_JS)
+    if os.path.exists(SQLITE):
+        sql_data = {}
+        sql_data["incomplete_visits"]   = get_query_data("incomplete_visits", INC_VISITS, True)
+        sql_data["site_visits"]         = get_query_data("site_visits", SITE_VISITS)
+        sql_data["crawl"]               = get_query_data("crawl", CRAWL)
+        sql_data["canvas_js"]           = get_query_data("canvas_js", CANVAS_JS)
+        sql_data["js_http_url"]         = get_query_data("js_http_url", JS_HTTP_URL)
+        sql_data["http_sizes"]          = get_query_data("http_sizes", HTTP_SIZES)
+        sql_data["math_js"]             = get_query_data("math_js", MATH_JS)
 
-    end = time.time()
-    print(f"SQL Extraction time: {end - start}s")
-    start = end
+        end = time.time()
+        print(f"SQL Extraction time: {end - start}s")
+        start = end
 
-    dump_json(sql_data, f"{crawl_id}_sql_data.json", D_EXTRACT)
-    end = time.time()
-    print(f"JSON Write time: {end - start}s")
-    print()
+        dump_json(sql_data, f"{crawl_id}_sql_data.json", D_EXTRACT)
+        end = time.time()
+        print(f"JSON Write time: {end - start}s")
+        print()
+    else:
+        print("SQL not found")
+        print()
 
 
 def main():

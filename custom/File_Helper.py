@@ -96,11 +96,6 @@ def dump_json(dict, file_name, path = DATADIR, mode = "w"):
     json.dump(data, out_file, indent = 4)
     out_file.close()
 
-def open_file(path_to_file, mode = 'r', encoding='utf-8'):
-        
-    # opening file
-    return open(path_to_file, mode= mode, encoding= encoding)
-
 def get_tranco_domains(count_from : int, count_to : int) -> list[str]:
 
     domains = []
