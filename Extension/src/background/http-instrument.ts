@@ -149,9 +149,7 @@ export class HttpInstrument {
         details,
         crawlID,
         incrementedEventOrdinal(),
-        // Custom - [START]
-        // saveContentOption,
-        // Custom - [END]
+        saveContentOption,
       );
     };
     browser.webRequest.onCompleted.addListener(
@@ -576,12 +574,9 @@ export class HttpInstrument {
     const pendingResponse = this.getPendingResponse(details.requestId);
     try {
       const responseBodyListener = pendingResponse.responseBodyListener;
-      // Custom - [START]
-      // I don't need to get and store responseBody in levelDB
-      // const respBody = await responseBodyListener.getResponseBody();
+      const respBody = await responseBodyListener.getResponseBody();
       const contentHash = await responseBodyListener.getContentHash();
-      // this.dataReceiver.saveContent(respBody, escapeString(contentHash));
-      // Custom - [END]
+      this.dataReceiver.saveContent(respBody, escapeString(contentHash));
       update.content_hash = contentHash;
       this.dataReceiver.saveRecord("http_responses", update);
     } catch (err) {
@@ -611,9 +606,7 @@ export class HttpInstrument {
     details: WebRequestOnCompletedEventDetails,
     crawlID,
     eventOrdinal,
-    // Custom - [START]
-    // saveContent,
-    // Custom - [END]
+    saveContent,
   ) {
     /*
     console.log(
@@ -674,17 +667,11 @@ export class HttpInstrument {
     update.headers = parsedHeaders.headers;
     update.location = parsedHeaders.location;
     
-    // Custom - [START]
-    /*
     if (this.shouldSaveContent(saveContent, details.type)) {
       this.logWithResponseBody(details, update);
     } else {
       this.dataReceiver.saveRecord("http_responses", update);
     }
-    */
-    // Here gets content_hash and calls .saveRecord()
-    this.logWithResponseBody(details, update);
-    // Custom - [END]
   }
 
   private jsonifyHeaders(headers: HttpHeaders) {

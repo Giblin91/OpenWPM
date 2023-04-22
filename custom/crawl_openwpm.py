@@ -2,14 +2,14 @@
 import logging
 import random
 
-from custom.File_Helper import get_tranco_domains, get_dcfp_logger, PATH_TO_DCFP_HTML, DATADIR, OWPM_LOG, SQLITE#, LEVELDB
+from custom.File_Helper import get_tranco_domains, get_dcfp_logger, PATH_TO_DCFP_HTML, DATADIR, OWPM_LOG, SQLITE, LEVELDB
 from custom.Cookie_Handler import AcceptCookiesCommand
 
 from openwpm.command_sequence import CommandSequence
 from openwpm.commands.browser_commands import GetCommand
 from openwpm.config import BrowserParams, ManagerParams
 from openwpm.storage.sql_provider import SQLiteStorageProvider
-# from openwpm.storage.leveldb import LevelDbProvider
+from openwpm.storage.leveldb import LevelDbProvider
 from openwpm.task_manager import TaskManager
 
 def format_args(args):
@@ -78,7 +78,7 @@ def main(args):
         browser_param.callstack_instrument = False # to see if a script sent smth back
         # Record DNS resolution
         browser_param.dns_instrument = False
-        browser_param.save_content = True # Normally to get hash and store to levelDB, for this implementations, just to get hash correctly
+        browser_param.save_content = True # To get hash and store to levelDB
 
         browser_param.custom_params = {"isMobile" : MOBILE}
 
@@ -98,7 +98,7 @@ def main(args):
         manager_params,
         browser_params,
         SQLiteStorageProvider(SQLITE),
-        None, #LevelDbProvider(LEVELDB),
+        LevelDbProvider(LEVELDB),
     ) as manager:
         # Visits the sites
         for index, site in enumerate(sites):
