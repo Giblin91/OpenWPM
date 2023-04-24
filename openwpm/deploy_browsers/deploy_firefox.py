@@ -17,7 +17,8 @@ from . import configure_firefox
 from .selenium_firefox import FirefoxBinary, FirefoxLogInterceptor, Options
 
 DEFAULT_SCREEN_RES = (1366, 768)
-ANDROID_SCREEN_RES = (360, 592)  # Moto G5
+#ANDROID_SCREEN_RES = (360, 592)  # Moto G5
+ANDROID_SCREEN_RES = (412, 691)  # Pixel 2 XL
 logger = logging.getLogger("openwpm")
 
 
@@ -53,7 +54,9 @@ def deploy_firefox(
     
     if browser_params.custom_params["isMobile"]:
         screen_res = ANDROID_SCREEN_RES
-        agent = " Mozilla/5.0 (Android 7.0; Mobile; rv:55.0) Gecko/55.0 Firefox/55.0"
+        #agent = " Mozilla/5.0 (Android 7.0; Mobile; rv:55.0) Gecko/55.0 Firefox/55.0" # Moto G5
+        # https://github.com/duckduckgo/tracker-radar-collector/blob/3e9f49e46e5051e9f3d26bcd3be054447af887e4/crawler.js#L9
+        agent = " Mozilla/5.0 (Linux; Android 10; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Mobile Safari/537.36"
         fo.set_preference("general.useragent.override", agent)
     # CUSTOM CALO - END
 
